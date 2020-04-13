@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的餐廳</title>
+  <link rel="stylesheet" href="/stylesheets/bootstrap.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+    integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+</head>
+
+<body>
+  <header>
+    <!-- navigation -->
+    <nav class="navbar navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="/">
+          <img src="https://assets-lighthouse.s3.amazonaws.com/uploads/image/file/6227/restaurant-list-logo.png"
+            width="30" height="30" class="d-inline-block align-top" alt="好。吃">
+          我的餐廳清單
+        </a>
+        {{#if user}}
+          <span class="ml-auto mr-3">Hi, {{{user.name}}}</span>
+        {{/if}}
+        {{#if isAuthenticated}}
+          <form class="form-inline" action="/users/logout">
+            <button type="submit" class="btn btn-outline-info">Logout</button>
+          </form>
+        {{else}}
+          <form class="form-inline" action="/users/login">
+            <button type="submit" class="btn btn-outline-info">Login</button>
+          </form>
+        {{/if}}
+      </div>
+    </nav>
+
+    <div class="banner"></div>
+  </header>
+  {{{body}}}
+  <script src="/javascripts/jquery-3.3.1.js"></script>
+  <script src="/javascripts/popper.min.js"></script>
+  <script src="/javascripts/bootstrap.js"></script>
+</body>
+
+</html>
