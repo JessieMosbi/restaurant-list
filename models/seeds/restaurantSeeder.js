@@ -15,42 +15,63 @@ db.on('error', () => {
 
 db.once('open', () => {
   console.log('mongodb connected')
+  console.log()
 
-  const user = []
-  user.push(new User({
+  // users' data
+  const users = []
+  users.push(new User({
     name: 'user1',
     email: 'user1@example.com',
     password: '12345678'
   }))
-  user.push(new User({
+  users.push(new User({
     name: 'user2',
     email: 'user2@example.com',
     password: '12345678'
   }))
 
-  user.forEach((newUser) => {
-    bcrypt.genSalt(10, (err, salt) => {
-      if (err) return console.log(err)
-      bcrypt.hash(newUser.password, salt, (err, hash) => {
-        if (err) return console.log(err)
-        newUser.password = hash
-        newUser.save((err) => {
-          if (err) console.log(err)
-        })
+  // user create method (非同步)
+  users.map((user) => {
+    bcrypt
+      .genSalt(10)
+      .then(salt => bcrypt.hash(user.password, salt))
+      .then(hash => {
+        user.password = hash
       })
-    })
   })
 
-  // 資料處理 (mongodb 會自動新增每個 document 的 _id，故先去掉 json file 裡給的編號)
+  // use Promise.all to deal with promises
+  Promise.all(users.map(user => user.save()))
+    .then(() => {
+      console.log()
+      console.log('all users are done.')
+      console.log()
+    })
+
+  // restaurant 與 user 對應處理 (mongodb 會自動新增每個 document 的 _id，故先去掉 json file 裡 restaurant 給的編號)
   restaurantList.forEach((restaurant) => delete restaurant.id)
   for (let i = 1; i <= restaurantList.length; i++) {
-    if (i <= 3) restaurantList[i].userId = user[0]._id
-    else if (i >= 4 && i <= 6) restaurantList[i].userId = user[1]._id
-    else break
-
-    Restaurant.create(restaurantList[i])
-    // console.log(restaurantList[i])
+    if (i <= 3) restaurantList[i - 1].userId = users[0]._id
+    else if (i >= 4 && i <= 6) restaurantList[i - 1].userId = users[1]._id
+    else restaurantList[i - 1].userId = users[0]._id
   }
 
-  console.log('done')
+  // restaurant create method (非同步)
+  const createRestaurant = (item) => {
+    return new Promise((resolve, reject) => {
+      Restaurant.create(item, (err) => {
+        if (err) reject(new Error(err))
+        resolve(`${item.name} create successfully`)
+      })
+    })
+  }
+
+  // use Promise.all to deal with promises
+  Promise.all(restaurantList.map((restaurant) => createRestaurant(restaurant)))
+    .then((messages) => {
+      messages.forEach((message) => console.log(message))
+      console.log()
+      console.log('all restaurants are done.')
+      process.exit()
+    })
 })
