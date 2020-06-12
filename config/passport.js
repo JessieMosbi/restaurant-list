@@ -16,12 +16,14 @@ module.exports = (app) => {
       User.findOne({ email })
         .then((user) => {
           if (!user) return done(null, false, { message: '此電子郵件沒有註冊過，禁止登入' })
-          bcrypt.compare(password, user.password, (err, isMatch) => {
-            if (err) return console.log(err)
-            if (!isMatch) return done(null, false, { message: '信箱密碼錯誤，請重新登入' })
-            return done(null, user)
-          })
+          bcrypt.compare(password, user.password)
+            .then(isMatch => {
+              if (!isMatch) return done(null, false, { message: '信箱密碼錯誤，請重新登入' })
+              return done(null, user)
+            })
+            .catch(err => done(err, false))
         })
+        .catch(err => done(err, false))
     })
   )
 
@@ -35,24 +37,19 @@ module.exports = (app) => {
     }, (accessToken, refreshToken, profile, done) => {
       User.findOne({ email: profile._json.email })
         .then((user) => {
-          if (!user) {
-            // 產生密碼
-            const randomPassword = Math.random().toString(36).slice(-8)
-            bcrypt.genSalt(10, (err, salt) => {
-              if (err) return console.log(err)
-              bcrypt.hash(randomPassword, salt, (err, hash) => {
-                if (err) return console.log(err)
-                const newUser = new User({
-                  name: profile._json.name,
-                  email: profile._json.email,
-                  password: hash
-                })
-                newUser.save()
-                  .then((user) => done(null, user))
-                  .catch((err) => console.log(err))
-              })
-            })
-          } else return done(null, user)
+          if (user) return done(null, user)
+
+          const randomPassword = Math.random().toString(36).slice(-8)
+
+          bcrypt.genSalt(10)
+            .then(salt => bcrypt.hash(randomPassword, salt))
+            .then(hash => User.create({
+              name: profile._json.name,
+              email: profile._json.email,
+              password: hash
+            }))
+            .then(user => done(null, user))
+            .catch(err => done(err, user))
         })
         .catch((err) => console.log(err))
     })
