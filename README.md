@@ -48,6 +48,9 @@ npm install
 FACEBOOK_ID=xxxxxxxx
 FACEBOOK_SECRET=xxxxxxxx
 FACEBOOK_CALLBACK=http://localhost:3000/auth/facebook/callback
+SESSION_SECRET=xxxxxxxx
+MONGODB_URI=mongodb://localhost/todo-list
+PORT=3000
 ```
 
 ## Executing
@@ -74,6 +77,11 @@ npm run dev
 ```console
 cd <Your download directory>/restaurant-list/models/seeds/
 node restaurantSeeder.js
+```
+
+或是直接執行以下指令也可以建立種子資料
+```console
+npm run seed
 ```
 
 ## Features
