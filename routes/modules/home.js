@@ -51,10 +51,9 @@ const script = `
 const express = require('express')
 const router = express.Router()
 const Restaurant = require('../../models/restaurant.js')
-const { authenticated } = require('../../config/auth.js')
 
 // 使用者可以瀏覽全部所有餐廳 (includes 搜尋、排序)
-router.get('/', authenticated, (req, res) => {
+router.get('/', (req, res) => {
   // 搜尋
   const keyword = req.query.keyword
   const findCondition = (keyword) ? { name: { $regex: '.*' + keyword + '.*', $options: 'i' } } : {} // 去 DB 用 SQL LIKE 找 data ({欄位名稱: {LIKE: %keyword%}})，ignore 大小寫
