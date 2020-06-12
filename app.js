@@ -4,7 +4,6 @@ const port = 3000
 // Load module and file
 const express = require('express')
 const exphbs = require('express-handlebars')
-const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
 const session = require('express-session')
@@ -13,16 +12,7 @@ const flash = require('connect-flash')
 const routes = require('./routes/index.js')
 
 // DB
-mongoose.connect('mongodb://127.0.0.1/restaurant', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
-const db = mongoose.connection
-
-db.on('error', () => {
-  console.log('mongodb error')
-})
-
-db.once('open', () => {
-  console.log('mongodb connected')
-})
+require('./config/mongoose')
 
 // Set express module
 const app = express()
