@@ -50,8 +50,8 @@ const script = `
 `
 const express = require('express')
 const router = express.Router()
-const Restaurant = require('../models/restaurant.js')
-const { authenticated } = require('../config/auth.js')
+const Restaurant = require('../../models/restaurant.js')
+const { authenticated } = require('../../config/auth.js')
 
 // 使用者可以瀏覽全部所有餐廳 (includes 搜尋、排序)
 router.get('/', authenticated, (req, res) => {

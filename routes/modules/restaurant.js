@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const Restaurant = require('../models/restaurant.js')
-const { authenticated } = require('../config/auth.js')
+const Restaurant = require('../../models/restaurant.js')
+const { authenticated } = require('../../config/auth.js')
 
 // 使用者可以新增一家餐廳
 router.get('/new', authenticated, (req, res) => {
