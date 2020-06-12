@@ -7,9 +7,9 @@ const exphbs = require('express-handlebars')
 const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
 const session = require('express-session')
-const passport = require('passport')
 const flash = require('connect-flash')
 const routes = require('./routes/index.js')
+const usePassport = require('./config/passport.js')
 
 // DB
 require('./config/mongoose')
@@ -33,10 +33,11 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }))
-app.use(passport.initialize())
-app.use(passport.session())
-require('./config/passport.js')(passport)
+
 app.use(flash())
+
+// Set authentication
+usePassport(app)
 
 // Set variable that view can use
 app.use((req, res, next) => {
