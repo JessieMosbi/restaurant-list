@@ -18,7 +18,7 @@ module.exports = (app) => {
           if (!user) return done(null, false, { message: '此電子郵件沒有註冊過，禁止登入' })
           bcrypt.compare(password, user.password, (err, isMatch) => {
             if (err) return console.log(err)
-            if (!isMatch) return done(null, false, { message: 'Email and Password incorrect' })
+            if (!isMatch) return done(null, false, { message: '信箱密碼錯誤，請重新登入' })
             return done(null, user)
           })
         })

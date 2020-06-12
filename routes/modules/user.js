@@ -12,26 +12,9 @@ router.post('/login', passport.authenticate('local',
   {
     successRedirect: '/',
     failureRedirect: '/users/login',
-    failureFlash: '信箱密碼錯誤，請重新登入' // flash an error message
+    failureFlash: true
   }
 ))
-
-/*
-router.post('/login', (req, res, next) => {
-  passport.authenticate('local', (err, user, info) => {
-    if (err) return console.log(err)
-    if (!user) return res.render('users/login', { warning_msg: '信箱密碼錯誤，請重新登入' })
-    else {
-      // FIXME: 會出現 Failed to serialize user into session，但是我的 passport.js 有設的說（目前還在 debug，我看出現的 Error 底下也有跑到 passport.js）
-      // 客製化需要自行設定 session, When the login operation completes, user will be assigned to req.user
-      req.login('user', (err) => {
-        if (err) return next(err)
-        return res.redirect('/' + user.username)
-      })
-    }
-  })(req, res, next)
-})
-*/
 
 router.get('/register', (req, res) => {
   res.render('users/register')
