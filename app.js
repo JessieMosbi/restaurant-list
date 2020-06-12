@@ -32,8 +32,8 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // Set express handlebars module
-app.engine('handlebars', exphbs({ defaultLayout: 'main' })) // define engine and its layout
-app.set('view engine', 'handlebars') // set engine
+app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' })) // define engine and its layout
+app.set('view engine', 'hbs') // set engine
 app.use(bodyParser.urlencoded({ extended: true })) // Use body-parser to parse POST data
 app.use(express.static('public')) // Where to find static file directory
 app.use(methodOverride('_method')) // Use method-override to make RESTful routes
