@@ -49,7 +49,7 @@ FACEBOOK_ID=xxxxxxxx
 FACEBOOK_SECRET=xxxxxxxx
 FACEBOOK_CALLBACK=http://localhost:3000/auth/facebook/callback
 SESSION_SECRET=xxxxxxxx
-MONGODB_URI=mongodb://localhost/todo-list
+MONGODB_URI=mongodb://localhost/restaurant
 PORT=3000
 ```
 
