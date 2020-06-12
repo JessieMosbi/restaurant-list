@@ -1,5 +1,5 @@
 // Set params
-const port = 3000
+const port = process.env.PORT || 3000
 
 // Load module and file
 const express = require('express')
@@ -29,7 +29,7 @@ app.use(express.static('public')) // Where to find static file directory
 app.use(methodOverride('_method')) // Use method-override to make RESTful routes
 
 app.use(session({
-  secret: 'Jessie oepwqnfqughqp34ug',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true
 }))
