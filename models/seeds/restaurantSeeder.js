@@ -13,7 +13,7 @@ db.on('error', () => {
   console.log('mongodb error')
 })
 
-db.once('open', () => {
+db.once('open', async () => {
   console.log('mongodb connected')
   console.log()
 
@@ -30,23 +30,30 @@ db.once('open', () => {
     password: '12345678'
   }))
 
-  // user create method (非同步)
-  users.map((user) => {
-    bcrypt
-      .genSalt(10)
-      .then(salt => bcrypt.hash(user.password, salt))
-      .then(hash => {
-        user.password = hash
-      })
-  })
+  for (const user of users) {
+    try {
+      await bcrypt
+        .genSalt(10)
+        .then(salt => bcrypt.hash(user.password, salt))
+        .then(hash => {
+          user.password = hash
+        })
+    } catch (e) {
+      console.warn(e)
+    }
+  }
 
   // use Promise.all to deal with promises
-  Promise.all(users.map(user => user.save()))
-    .then(() => {
-      console.log()
-      console.log('all users are done.')
-      console.log()
-    })
+  try {
+    await Promise.all(users.map(user => user.save()))
+      .then(() => {
+        console.log()
+        console.log('all users are done.')
+        console.log()
+      })
+  } catch (e) {
+    console.warn(e)
+  }
 
   // restaurant 與 user 對應處理 (mongodb 會自動新增每個 document 的 _id，故先去掉 json file 裡 restaurant 給的編號)
   restaurantList.forEach((restaurant) => delete restaurant.id)
@@ -67,11 +74,15 @@ db.once('open', () => {
   }
 
   // use Promise.all to deal with promises
-  Promise.all(restaurantList.map((restaurant) => createRestaurant(restaurant)))
-    .then((messages) => {
-      messages.forEach((message) => console.log(message))
-      console.log()
-      console.log('all restaurants are done.')
-      process.exit()
-    })
+  try {
+    await Promise.all(restaurantList.map((restaurant) => createRestaurant(restaurant)))
+      .then((messages) => {
+        messages.forEach((message) => console.log(message))
+        console.log()
+        console.log('all restaurants are done.')
+        process.exit()
+      })
+  } catch (e) {
+    console.warn(e)
+  }
 })
